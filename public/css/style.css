@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;900&display=swap');
+
+* {
+    margin: 0rem;
+    padding: 0rem;
+    box-sizing: border-box;
+    font-family: "poppins", Arial, Arial, sans-serif;
+}
+
+:root {
+    --background: #15171D;
+    --blue-active: #4091F9;
+    --snow-white: #F5F9FF;
+    --snow-gray: #BBBEC6;
+    --white-smooth: #e8eaf0;
+    --input-shadow: #4c5a7a66;
+    --blue-deactive: #222B40;
+    --blue-deactive-secondary: #2d3344;
+}
+
+body {
+    position: relative;
+    background-color: var(--background);
+}
+
+a {
+    color: var(--background);
+    text-decoration: none;
+}
+
+h1 {
+    font-size: calc(1rem + .8vw);
+    font-weight: 900;
+}
+
+p {
+    font-size: calc(1rem + .28vw);
+}
+
+button,
+input[type="submit"],
+input[type="button"] {
+    width: calc(12rem + 2vw);
+    height: calc(3rem + 2vh);
+    border: none;
+    border-radius: 4px;
+    color: var(--snow-white);
+    background-color: var(--blue-active);
+}
+
+button:disabled,
+input[type="submit"]:disabled,
+input[type="button"]:disabled {
+    background-color: var(--snow-gray);
+}
+
+button:hover {
+    color: var(--snow-white);
+    background-color: var(--blue-deactive);
+    transition: 500ms background-color;
+}
+
+section {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+footer {
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    padding: 1rem 0rem;
+    background-color: var(--snow-gray);
+}
+
+footer p {
+    font-size: 18px;
+}
+
+/*  ---------------
+ *  Mensagem Popup.
+ *  _______________
+*/
+div.message {
+    z-index: 20;
+    top: -30rem;
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+    position: fixed;
+    transition: 1s ease-in-out;
+}
+
+div.message > p {
+    width: 100%;
+    text-align: center;
+}
+
+div.message.success {
+    top: 0;
+    background-color: #6A6;
+}
+
+div.message.erro {
+    top: 0;
+    background-color: #A66;
+}
+
+/** --------------------
+*   Página de principal.
+*   ____________________
+*/
+div.main,
+div.cadastro,
+div.visualizar {
+    width: 80%;
+    height: 80%;
+    display: flex;
+    padding: 17vh 17vw;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--snow-white);
+}
+
+div.filter-content {
+    margin-top: -180px;
+}
+
+div.main p {
+    text-align: justify;
+}
+
+div.main div.buttons {
+    width: 100%;
+    height: auto;
+    margin: 3rem 0rem;
+}
+
+/* Formulario de cadastro */
+div.cadastro {
+    background-color: var(--white-smooth);
+}
+
+div.cadastro form {
+    width: 80%;
+    padding: 2rem 0rem;
+}
+
+div.cadastro div.fields {
+    margin: 3rem 0rem;
+}
+
+div.cadastro input[type="text"] {
+    width: 100%;
+    padding: 1rem 3rem;
+    border-radius: 10px;
+    border: 4px solid var(--snow-gray);
+    background-color: var(--snow-white);
+}
+
+div.cadastro input {
+    box-shadow: 5px 5px 1px 3px var(--input-shadow);
+}
+
+div.cadastro input[type="submit"],
+div.cadastro input[type="button"] {
+    width: 100%;
+    margin: .5rem 0rem;
+    transition: 600ms ease-in-out;
+}
+
+div.cadastro input[type="button"] {
+    color: var(--snow-white);
+    transition: 600ms ease-in-out;
+    background-color: var(--blue-deactive);
+}
+
+div.cadastro input[type="submit"]:hover {
+    background-color: var(--background);
+}
+
+div.cadastro input[type="button"]:hover {
+    color: var(--background);
+    background-color: var(--snow-gray);
+}
+
+div.cadastro input[type="button"]:hover,
+div.cadastro input[type="submit"]:hover {
+    box-shadow: 0px 0px 0px 0px var(--input-shadow);
+}
+
+
+/** ----------------------
+*   Página de Visualização.
+*   ______________________
+*/
+
+div.visualizar {
+    width: 100%;
+    display: flex;
+    padding: 17vh 0vw;
+    align-self: center;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+}
+
+div.box-usuarios {
+    width: 90%;
+    height: 50vh;
+    display: flex;
+    overflow-y: auto;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+div.box-usuarios table {
+    width: 100%;
+    margin: 0rem auto;
+}
+
+div.box-usuarios tr {
+    width: 100%;
+    display: flex;
+    list-style: none;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+div.box-usuarios th {
+    color: #fff;
+    background-color: #3c3c3c;
+}
+
+div.box-usuarios th,
+div.box-usuarios td {
+    display: flex;
+    width: 100%;
+    padding: 10px 0;
+    align-items: center;
+    border: 2px solid var(--input-shadow);
+    justify-content: space-evenly;
+    text-align: center !important;
+}
+
+div.box-usuarios tr:nth-child(even) {
+    background-color: #CCCCCC;
+}
+
+div.box-usuarios td .btn {
+    width: 45%;
+    height: 25px;
+    cursor: pointer;
+}
+
+.btn-deletar {
+    width: 45%;
+    height: 25px;
+    cursor: pointer;
+    background-color: red !important;
+}
+
+.btn-deletar:hover {
+    background-color: #3c3c3c !important;
+}
+
+
+/** 
+ *  ----------------------------------
+ *  Container de alteração do usuário.
+ *  __________________________________
+*/
+div.edit-content {
+    width: 100%;
+    height: 100vh;
+    display: none;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    background-color: #00000077;
+}
+
+span.exit-float-button {
+    top: 2rem;
+    right: 2rem;
+    position: absolute;
+    cursor: pointer;
+    margin: auto 0rem;
+    text-align: center;
+    padding: .5rem 1rem;
+    border-radius: 100%;
+    background-color: var(--snow-white);
+}
+
+div.edit-content>form {
+    width: 50%;
+    height: 70%;
+    display: flex;
+    padding: 4vh 12vw;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--snow-white);
+}
+
+div.edit-content form input {
+    box-shadow: .4rem .4rem 0rem var(--input-shadow);
+}
+
+div.edit-content form input[type=text] {
+    border-radius: 7px;
+    padding: .7rem 2rem;
+    margin: 1rem 0rem;
+    border: 4px solid var(--snow-gray);
+}
+
+div.edit-content form input[type=button],
+div.edit-content form input[type=submit] {
+    width: 100%;
+    margin: 1rem 0rem;
+    transition: ease-in-out 300ms;
+}
+
+div.edit-content form input[type=submit]:hover {
+    background-color: var(--blue-deactive);
+}
+
+div.edit-content form input[type=button] {
+    color: var(--background);
+    border: 2px solid #DD2211;
+    transition: ease-in-out 300ms background-color;
+    background-color: var(--snow-white);
+}
+
+div.edit-content form input[type=button]:hover {
+    border: none;
+    color: var(--snow-white);
+    background-color: #FF3311;
+}
+
+
+/**
+ *  -----------------------
+ *  Container de filtragem.
+ *  _______________________
+*/
+
+div.filter-content button {
+    width: calc(7rem + 2vw);
+    height: calc(1rem + 1vh);
+    box-shadow: 4px 4px 0px var(--input-shadow);
+}
+
+@media only screen and (max-width: 980px) {
+
+    /** -------------------
+    *   Página de principal
+    *   ___________________
+    */
+    div.main,
+    div.cadastro {
+        width: 100%;
+        height: 100%;
+    }
+
+    div.main h1 {
+        font-size: calc(1.3rem + .8vw);
+    }
+
+    div.main p {
+        font-size: calc(1.1rem + .8vw);
+    }
+
+    div.main div.buttons {
+        text-align: center;
+    }
+
+    div.main div.buttons button {
+        margin: 1rem 0rem;
+    }
+
+    /** 
+    *  ----------------------------------
+    *  Container de alteração do usuário.
+    *  __________________________________
+    */
+    div.edit-content>form {
+        width: 100%;
+        
+    }
+}
