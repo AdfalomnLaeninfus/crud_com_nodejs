@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/css/style.css" />
+
+    <title>CRUD</title>
+</head>
+<body>
+    <section>
+        <div class="message">
+            <p></p>
+        </div>
+        <div class="cadastro">
+            <form action="javascript:sendData()" method="POST">
+                <div class="fields">
+                    <label for="nome">Nome</label><br>
+                    <input
+                        name="nome"
+                        type="text"
+                        placeholder="Insira seu nome"
+                        required />
+                </div>
+
+                <div class="fields">
+                    <label for="idade">Idade:</label><br>
+                    <input
+                        name="idade"
+                        type="text"
+                        onkeyup="hasData(this)"
+                        placeholder="Insira sua Data de Nascimento dd/mm/aaaa"
+                        minlength="8" maxlength="10"
+                        required>
+                </div>
+
+                <div class="fields">
+                    <label for="numero">Número de Telefone:</label><br>
+                    <input
+                        name="numero"
+                        type="text"
+                        onkeyup="hasPhone(this)"
+                        placeholder="(00) 00000-0000"
+                        minlength="11" maxlength="16"
+                        required>
+                </div>
+
+                <input type="submit" value="Enviar" />
+                <a href="/"><input type="button" value="voltar"/></a>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>
+            <b>Desenvolvido por:</b> Adriano Reis Pereira Celestino.
+        </p>
+    </footer>
+
+    <script>
+        const sendData = async () => {
+            const messageContent    = document.querySelector('div.message');
+            const message           = document.querySelector('div.message>p');
+            const nameInput         = document.querySelector('input[name="nome"]');
+            const ageInput          = document.querySelector('input[name="idade"]');
+            const numberInput       = document.querySelector('input[name="numero"]');
+
+            const options = {
+                method: "post",
+                body: JSON.stringify({
+                    user: {
+                        nome: nameInput.value,
+                        idade: ageInput.value,
+                        numero: numberInput.value
+                    }
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8"
+                }
+            }
+
+            const data = await fetch("/cadastro", options)
+                                .then(dataRaw => dataRaw.json())
+                                .then(dataRes => {
+                                    if ( !dataRes.erro ) {
+                                        nameInput.value     = "";
+                                        ageInput.value      = "";
+                                        numberInput.value   = "";
+
+                                        message.innerHTML = dataRes.mensagem;
+                                        messageContent.className = "message success";
+                                    } else {
+                                        message.innerHTML = dataRes.mensagem;
+                                        messageContent.className = "message erro";
+                                    }
+                                })
+            
+            // Retirar o popup de status da requisição.
+            setTimeout(() => {
+                messageContent.className = "message";
+            }, 8000);
+        }
+
+        const hasData = ( ev ) => {
+            const REGEX = /[0-9]{2}\/[0-9]{2}\/[0-9]{4}/;
+            const sendButton = document.querySelector("form input[type=submit]");
+
+            sendButton.disabled = true;
+
+            if (RegExp(REGEX).test(ev.value)) {
+                sendButton.disabled = false;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        const hasPhone = ( ev ) => {
+            const REGEX = /(^(\d{2}|[(]\d{2}[)])\s\d{5}-\d{4})|(^(\d{2}|[(]\d{2}[)])\s\d{4}-\d{4})/;
+            const sendButton = document.querySelector("form input[type=submit]");
+
+            sendButton.disabled = true;
+
+            if (RegExp(REGEX).test(ev.value)) {
+                sendButton.disabled = false;
+
+                return true;
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="/css/style.css" />
+
+	<title>CRUD</title>
+</head>
+
+<body>
+	<section>
+		<div class="visualizar">
+			<div class="message">
+				<p></p>
+			</div>
+			<div class="filter-content">
+				<p>Filtrar por:</p>
+				
+				<select name="filterBy" id="filter-by">
+					<option value="nome">nome</option>
+					<option value="telefone">telefone</option>
+				</select>
+
+				<input type="text">
+				<button onClick="sendFilterData()">pesquisar</button>
+			</div>
+			<div class="box-usuarios">
+				<h2 style="width: 100%; padding: 2rem 0.2rem;">Lista de usuários:</h2>
+				<table>
+					<tr>
+						<th style="display: none;">id</th>
+						<th>Nome</th>
+						<th>Idade</th>
+						<th>Telefones</th>
+						<th>Ações</th>
+					</tr>
+				</table>
+			</div>
+			<div style="position: absolute; bottom: 2rem;">
+				<button onclick="updateTable()">Atualizar</button>
+				<a href="/">
+					<button>Voltar</button>
+				</a>
+			</div>
+		</div>
+
+		<div class="edit-content">
+			<span class="exit-float-button" onclick="closeEditContent()">x</span>
+			<form action="javascript:void(0)" method="post">
+				<label style="display:none;" for="id">id</label>
+				<input style="display:none;" name="id" type="text">
+
+				<label for="nome">Nome:</label>
+				<input name="nome" type="text" placeholder="Insira seu nome..." required/>
+
+				<label for="idade">Data de nascimento:</label>
+				<input name="idade" type="text" onkeyup="hasData(this)" placeholder="00/00/0000" maxlength="10" required/>
+
+				<label for="numero">Número:</label>
+				<input name="numero" type="text" onkeyup="hasPhone(this)" placeholder="(00) 00000-0000" maxlength="15" required/>
+
+				<input type="submit" value="Salvar" onclick="sendDataEdit()">
+				<input type="button" value="Cancelar" onclick="closeEditContent()">
+			</form>
+		</div>
+	</section>
+
+	<footer>
+		<p>
+			<b>Desenvolvido por:</b> Adriano Reis Pereira Celestino.
+		</p>
+	</footer>
+
+	<script>
+		const section = document.querySelector('table');
+
+		const getData = async () => {
+			// Opções da requisição.
+			const option = {
+				method: 'post',
+				body: {},
+				header: {
+					'Content-Type': 'application/json; charset=UTF-8'
+				}
+			};
+
+			// Armazena os dados da requisição.
+			const data = await fetch('/visualizar', option)
+				.then(dataRaw => dataRaw.json())
+				.then(data => data)
+
+			return await data;
+		}
+
+		const createElementUser = (id, name, age, number) => {
+			const main = document.createElement("tr");
+			const templateHTML = `
+				<td style="display:none;">${id}</td>
+				<td aria-label="Nome do usuário">${name}</td>
+				<td aria-label="Idade do usuário">${age}</td>
+				<td aria-label="Número de telefone do usuário">${number}</td>
+				<td aria-label="Ações">
+					<button class="btn" aria-labe="Editar informações do usuário" onclick="showEditContent(this)">
+						Editar
+					</button>
+					<button class="btn-deletar" aria-label="Deletar usuário" onclick="deleteUser(this)">
+						Deletar
+					</button>
+				</td>`;
+
+			main.innerHTML = templateHTML;
+
+			return main;
+		}
+
+		const usersData = getData();
+
+		usersData.then(res => {
+			res.map(user => {
+				section.append(createElementUser(user.id, user.nome, user.idade, user.numero));
+			})
+		})
+
+		const hasData = (ev) => {
+			const REGEX = /^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/;
+			const sendButton = document.querySelector("form input[type=submit]");
+
+			sendButton.disabled = true;
+
+			if (RegExp(REGEX).test(ev.value)) {
+				sendButton.disabled = false;
+
+				return true;
+			}
+
+			return false;
+		};
+
+		const hasPhone = (ev) => {
+			const REGEX = /(^(\d{2}|[(]\d{2}[)]) \d{5}-\d{4})$|(^(\d{2}|[(]\d{2}[)]) \d{4}-\d{4})$/;
+			const sendButton = document.querySelector("form input[type=submit]");
+
+			sendButton.disabled = true;
+
+			if (RegExp(REGEX).test(ev.value)) {
+				sendButton.disabled = false;
+
+				return true;
+			}
+
+			return false;
+		};
+
+		const deleteUser = (ev) => {
+			const messageContent 	= document.querySelector("div.message");
+			const message			= document.querySelector("div.message>p");
+
+			const tdParent = ev.parentElement.parentElement;
+			const userData = {
+					"user": {
+						"id": tdParent.children[0].innerHTML
+					}
+				}
+
+			const deleteConfirm = confirm("Deseja mesmo deletar o usuário?");
+
+			if ( deleteConfirm ) {
+				// Faz a requisição para deletar o usuário.
+				const req = async (elem) => {
+					const option = {
+						method: "post",
+						body: JSON.stringify(userData),
+						headers: {
+							"Content-Type": "application/json; charset=UTF-8"
+						}
+					}
+
+					await fetch("/delete", option)
+						.then( res => res.json() )
+						.then( res => {
+							if ( !res.erro ) {
+								elem.remove();
+
+								message.innerHTML = res.mensagem;
+								messageContent.className = "message success";
+							} else {
+								message.innerHTML = res.mensagem
+								messageContent.className = "message erro";
+							}
+						})
+					
+					// Retirar o popup de status da requisição.
+					setTimeout(() => {
+						messageContent.className = "message";
+					}, 8000);
+				}
+
+				req(tdParent);
+			}
+		}
+
+		const closeEditContent = () => {
+			const editContent = document.querySelector(".edit-content");
+
+			editContent.style.display = "none";
+		};
+
+		const showEditContent = ( ev ) => {
+			// Elemento de edição.
+			const editContent = document.querySelector(".edit-content");
+
+			// Pega os dados do usuário.
+			const userIdSpan            = ev.parentElement.parentElement.children[0];
+			const userNameSpan          = ev.parentElement.parentElement.children[1];
+			const userAgeSpan           = ev.parentElement.parentElement.children[2];
+			const userNumberSpan        = ev.parentElement.parentElement.children[3];
+			
+			// Pega os itens do formulário de edição.
+			const formUserIdInput       = document.querySelector(".edit-content input[name='id']")
+			const formUserNameInput     = document.querySelector(".edit-content input[name='nome']");
+			const formUserAgeInput      = document.querySelector(".edit-content input[name='idade']");
+			const formUserNumberInput   = document.querySelector(".edit-content input[name='numero']");
+			
+			formUserIdInput.value		= userIdSpan.innerHTML;
+			formUserNameInput.value     = userNameSpan.innerHTML;
+			formUserAgeInput.value      = userAgeSpan.innerHTML;
+			formUserNumberInput.value   = userNumberSpan.innerHTML;
+
+			editContent.style.display = "flex";
+		}
+
+		const sendDataEdit = async () => {
+			const messageContent 		= document.querySelector("div.message");
+			const message				= document.querySelector("div.message>p");
+
+			// Pega os itens do formulário de edição.
+			const formUserIdInput       = document.querySelector(".edit-content input[name='id']")
+			const formUserNameInput     = document.querySelector(".edit-content input[name='nome']");
+			const formUserAgeInput      = document.querySelector(".edit-content input[name='idade']");
+			const formUserNumberInput   = document.querySelector(".edit-content input[name='numero']");
+			
+			// Cria um objeto para passar para a requisição.
+			const data = {
+				user: {
+					id: formUserIdInput.value,
+					nome: formUserNameInput.value,
+					idade: formUserAgeInput.value,
+					numero: formUserNumberInput.value
+				}
+			};
+			
+			const option = {
+				method: 'post',
+				body: JSON.stringify(data),
+				headers: {
+					"Content-Type": "application/json; charset=UTF-8"
+				}
+			};
+
+			if (confirm("Deseja continuar?")) {
+				await fetch("/alter", option)
+					.then( data => data.json() )
+					.then( dataRes => {
+						if ( !dataRes.erro ) {
+							formUserIdInput.innerHTML 		= "";
+							formUserNameInput.innerHTML 	= "";
+							formUserAgeInput.innerHTML		= "";
+							formUserNumberInput.innerHTML	= "";
+
+							document.querySelectorAll("table>tr").forEach(item => {
+								item.remove();
+							});
+
+							getData().then(users => {
+								users.map(user => {
+									section.appendChild(createElementUser(user.id, user.nome, user.idade, user.numero));
+								});
+							});
+
+							message.innerHTML = dataRes.mensagem;
+							messageContent.className = "message success";
+						} else {
+							message.innerHTML = dataRes.mensagem;
+							messageContent.className = "message erro";
+						}
+
+					setTimeout(() => {
+						messageContent.className = "message";
+					}, 8000);
+				});
+			}
+		}
+
+		const sendFilterData = async () => {
+			const dataType = document.querySelector('.filter-content > select').value;
+			const inputValues = document.querySelector('.filter-content > input').value;
+			const section = document.querySelector('table');
+			const options = {
+				method: 'post',
+				body: JSON.stringify({
+					filterData: {
+						by: dataType,
+						data: inputValues,
+					}
+				}),
+				headers: {
+					'Content-Type': 'application/json; charset=UTF-8'
+				}
+			}
+
+				let teste =	document.querySelectorAll("table>tr").forEach(item => {
+									item.remove();
+								});
+			await fetch('/filter', options)
+			.then( data => data.json())
+			.then( data => {
+				document.querySelectorAll("table>tr").forEach(item => {
+					item.remove();
+				});
+
+				data.data.map(user => {
+					section.appendChild(createElementUser(user.id, user.nome, user.idade, user.numero));
+				})
+			})
+		}
+
+		const updateTable = async () => {
+			document.querySelectorAll("table>tr").forEach(item => {
+				item.remove();
+			});
+
+			const options = {
+				method: 'post',
+				body: JSON.stringify({}),
+				headers: {
+					"Content-Type": "application/json; charset=UTF-8"
+				}
+			}
+
+			await fetch("/visualizar", options)
+				.then(data => data.json())
+				.then(dataRes => {
+					dataRes.map(data => {
+						section.appendChild(createElementUser(
+							data.id,
+							data.nome,
+							data.idade,
+							data.numero
+						));
+					});
+				});
+		}
+	</script>
+</body>
+
+</html>
