@@ -2,9 +2,9 @@
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
-    "crud",
-    "adr",
-    "1234",
+    "Nome_do_banco_de_dados",
+    "Nome_do_usuário_do_banco_de_dados",
+    "Senha_do_banco_de_dados",
     {
         host: "localhost",
         dialect: "mysql"
