@@ -1,0 +1,16 @@
+{
+    "name": "app",
+    "version": "1.0.0",
+    "author": {
+        "name": "Adriano Reis Pereira Celestino",
+        "email": "adrianoresipereira88@gmail.com"
+    },
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "mysql2": "^2.3.3",
+        "sequelize": "^6.25.3"
+    }
+}
