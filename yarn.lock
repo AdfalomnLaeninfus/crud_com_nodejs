@@ -102,8 +102,8 @@ destroy@1.2.0:
   resolved "https://registry.npmjs.org/destroy/-/destroy-1.2.0.tgz"
 
 dottie@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/dottie/-/dottie-2.0.2.tgz"
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/dottie/-/dottie-2.0.6.tgz#34564ebfc6ec5e5772272d466424ad5b696484d4"
 
 ee-first@1.1.1:
   version "1.1.1"
